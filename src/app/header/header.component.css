@@ -1,3 +1,8 @@
 li > a.active {
   color: navy;
 }
+
+ul.dropdown-menu.expanded,
+ul.dropdown-menu.expanded>li {
+  display: block;
+}
