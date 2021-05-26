@@ -1,0 +1,40 @@
+<nav class="navbar navbar-default navbar-expand-xs">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a href="#" class="navbar-brand">Recipe Book</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu"
+        aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-menu">
+      <ul class="nav navbar-nav">
+        <li><a
+            href="#"
+            name="Recipes"
+            (click)="handleClick($event)"
+            [ngClass]="{'active': activeNow==='Recipes'}"
+            #firstMenuElement
+          >Recipes</a></li>
+        <li><a
+            href="#"
+            name="ShoppingList"
+            (click)="handleClick($event)"
+            [ngClass]="{'active': activeNow==='ShoppingList'}"
+          >Shopping List</a></li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" role="button">Manage Data <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Save Data</a></li>
+            <li><a href="#">Fetch Data</a></li>
+          </ul>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,17 @@
+<div class="row">
+  <div class="col-sm-5">
+    <app-recipe-list
+      (onForwardRecipeDetails)="onReceivedRecipeObject($event)"
+    ></app-recipe-list>
+  </div>
+  <div class="col-sm-7">
+    <app-recipe-detail
+      [currentRecipe]="receivedRecipeObject"
+      *ngIf="receivedRecipeObject; else noRecipeBlock"
+    ></app-recipe-detail>
+    <ng-template #noRecipeBlock>
+      <p class="alert">No recipes selected!</p>
+    </ng-template>
+
+  </div>
+</div>

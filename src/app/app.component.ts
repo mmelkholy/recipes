@@ -6,5 +6,12 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'recipes';
+  title = 'recipes'
+  clicked: string = 'Recipes'
+
+
+  handleClick(elementName) {
+    this.clicked = elementName
+    console.log(this.clicked)
+  }
 }
