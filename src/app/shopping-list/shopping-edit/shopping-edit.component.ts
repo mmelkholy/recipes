@@ -1,3 +1,4 @@
+import { IngredientService } from './../../ingredient.service';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Ingredient } from 'src/app/shared/ingredients.model';
 
@@ -10,18 +11,17 @@ export class ShoppingEditComponent implements OnInit {
   currentName: string = ''
   currentAmount: number = 0
 
-  @Output() newIngredient = new EventEmitter<Ingredient>()
-
-  constructor() { }
+  constructor(private ingredients: IngredientService) { }
 
   ngOnInit(): void {
   }
 
   onAddIngredient(clickEvent) {
     clickEvent.preventDefault()
-    this.newIngredient.emit(new Ingredient(
-      this.currentName.trim(),
-      this.currentAmount
-    ))
+    this.ingredients.addNewIngredient(new Ingredient(this.currentName.trim(), this.currentAmount))
+  }
+
+  onDeleteIngredient(event: Event): void {
+    event.preventDefault()
   }
 }
