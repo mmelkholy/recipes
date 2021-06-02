@@ -8,34 +8,39 @@ import { Ingredient } from './shared/ingredients.model';
 export class RecipeService {
   private recipes: Recipe[] = [
     new Recipe(
+      1,
       "Pasta Recipe",
     "This is the decription of the pasta recipe",
       "http://127.0.0.1/public/images/pasta.jpeg",
       [
-        new Ingredient('Meat', 6),
-        new Ingredient('Carrots', 12),
-        new Ingredient('Rice', 0.3),
-        new Ingredient('Cheese', 0.1)
+        new Ingredient('1-0', 'Meat', 6),
+        new Ingredient('1-1', 'Carrots', 12),
+        new Ingredient('1-2', 'Rice', 0.3),
+        new Ingredient('1-3', 'Cheese', 0.1)
       ]
     ),
     new Recipe(
+      2,
       "Other Pasta",
     "I love Pasta as You can GUESS!",
       "http://127.0.0.1/public/images/pasta2.jpeg",
       [
-        new Ingredient('Meat', 6),
-        new Ingredient('Carrots', 12),
-        new Ingredient('Rice', 0.3),
-        new Ingredient('Cheese', 0.1)
+        new Ingredient('2-0', 'Meat', 6),
+        new Ingredient('2-1', 'Carrots', 12),
+        new Ingredient('2-2', 'Rice', 0.3),
+        new Ingredient('2-3', 'Cheese', 0.1)
       ]
     )
   ]
 
-  private clickedRecipe: Recipe
-  changeSelectedRecipe = new EventEmitter<Recipe>()
+  recipeListUpdated = new EventEmitter<Recipe[]>()
 
 
   constructor() { }
+
+  recipesListUpdates() {
+    this.recipeListUpdated.emit(this.recipes)
+  }
 
   listRecipes(): Recipe[] {
     return this.recipes
@@ -45,15 +50,26 @@ export class RecipeService {
     return this.recipes.filter(recipe => recipe.name === recipeName)[0]
   }
 
-  setClickedRecipe(recipe: Recipe) {
-    if (this.clickedRecipe !== recipe) {
-      this.clickedRecipe = recipe
-      this.changeSelectedRecipe.emit(this.clickedRecipe)
-    }
+  getRecipeById(id: number): Recipe {
+    return this.recipes.filter(recipe => recipe.id === id)[0]
   }
 
-  getSelectedRecipe(): Recipe {
-    return this.clickedRecipe
+  updateRecipe(recipe: Recipe) {
+    const index: number = this.recipes.findIndex((item: Recipe) => item.id === recipe.id)
+    console.log(index, this.recipes[index]['id'], recipe.id)
+    this.recipes[index] = recipe
   }
 
+  addNewRecipe(recipe: Recipe) {
+    this.recipes.push(recipe)
+    this.recipesListUpdates()
+  }
+
+  deleteRecipeById(id: number) {
+    this.recipes = this.recipes.filter((recipe: Recipe) => {
+      return recipe.id !== id
+    })
+    console.log(this.recipes)
+    this.recipesListUpdates()
+  }
 }

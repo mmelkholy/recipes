@@ -1,6 +1,6 @@
 <a
-  href="#"
-  (click)="onRecipeItemClick($event)"
+  [routerLink]=[item.id]
+  routerLinkActive='active'
   class="list-group-item clearfix">
   <div class="pull-left">
     <h4 class="list-group-item-heading">
@@ -9,6 +9,6 @@
     <p class="list-group-item-text">{{ item.desription }}</p>
   </div>
   <span class="pull-right">
-    <img [alt]="item.name" [src]="item.imgPath" class="img-responsive" style="max-height: 50px;">
+    <img [alt]="item.name" [src]="item.imgPath || 'http://127.0.0.1/public/images/img-placeholder.jpeg'" class="img-responsive" style="max-height: 50px; max-width: 70px;">
   </span>
 </a>

@@ -1,29 +1,61 @@
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscriber } from 'rxjs';
+
 import { IngredientService } from './../../ingredient.service';
 import { Recipe } from './../recipe.model';
-import { Component, OnInit } from '@angular/core';
 import { RecipeService } from 'src/app/recipe.service';
-import { Ingredient } from 'src/app/shared/ingredients.model';
 
 @Component({
   selector: 'app-recipe-detail',
   templateUrl: './recipe-detail.component.html',
   styleUrls: ['./recipe-detail.component.css']
 })
-export class RecipeDetailComponent implements OnInit {
+export class RecipeDetailComponent implements OnInit, OnDestroy {
+  subscriptions: object = {}
   currentRecipe: Recipe
+  currentRoute: string
+  imgStyle = {
+    'background-image': 'none'
+  }
 
-  constructor(private recipes: RecipeService, private ingredients: IngredientService) {
-    this.recipes.changeSelectedRecipe.subscribe((recipe) => this.currentRecipe = recipe)
+  constructor(
+    private recipes: RecipeService,
+    private ingredients: IngredientService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
   }
 
   ngOnInit(): void {
-    this.currentRecipe = this.recipes.getSelectedRecipe()
+    this.route.params.subscribe((params: Params) => {
+      this.currentRecipe = this.recipes.getRecipeById(+params['id'])
+      if (this.currentRecipe) {
+        this.imgStyle['background-image'] = 'url(' + this.currentRecipe.imgPath + ')'
+      }
+    })
   }
 
   addCurrentIngredients(): void {
-    console.log(this.currentRecipe.ingredients)
     for (let ingredient of this.currentRecipe.ingredients) {
       this.ingredients.addNewIngredient(ingredient)
+    }
+  }
+
+  deleteRecipe() {
+    confirm('Are you sure you want to delete this recipe?')
+    this.recipes.listRecipes().findIndex((item, index: number) => {
+      this.recipes.deleteRecipeById(this.currentRecipe.id)
+    })
+    this.router.navigate(['../'], {relativeTo: this.route})
+  }
+
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    for (let subscription in this.subscriptions) {
+      let sub: Subscriber<any> = this.subscriptions[subscription]
+      sub.unsubscribe()
     }
   }
 

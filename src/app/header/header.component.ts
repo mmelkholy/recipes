@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild, ElementRef } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnInit } from '@angular/core';
+import { ActivatedRouteSnapshot } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -6,9 +7,6 @@ import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild, Elem
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
-  @Output() clicked: EventEmitter<Text> = new EventEmitter<Text>()
-  @ViewChild('firstMenuElement') firstMenuElement: ElementRef
-  activeNow: string = 'Recipes'
 
   constructor() { }
 
@@ -16,12 +14,5 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-      this.activeNow = this.firstMenuElement.nativeElement.name
-  }
-
-  handleClick(event) {
-    event.preventDefault()
-    this.clicked.emit(event.target.name)
-    this.activeNow = event.target.name
   }
 }

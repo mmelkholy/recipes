@@ -14,9 +14,4 @@ export class RecipeItemComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
-  onRecipeItemClick(clickEvent) {
-    clickEvent.preventDefault()
-    this.recipes.setClickedRecipe(this.item)
-  }
 }

@@ -1,7 +1,7 @@
 <nav class="navbar navbar-default navbar-expand-xs">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a href="#" class="navbar-brand">Recipe Book</a>
+      <a routerLink="/" class="navbar-brand">Recipe Book</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu"
         aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -11,26 +11,26 @@
     <div class="collapse navbar-collapse" id="main-menu">
       <ul class="nav navbar-nav">
         <li><a
-            href="#"
+            routerLink="/recipes"
+            routerLinkActive="active"
             name="Recipes"
-            (click)="handleClick($event)"
-            [ngClass]="{'active': activeNow==='Recipes'}"
+            [ngClass]="{'active': false}"
             #firstMenuElement
           >Recipes</a></li>
         <li><a
-            href="#"
+            routerLink="/shopping-list"
+            routerLinkActive="active"
             name="ShoppingList"
-            (click)="handleClick($event)"
-            [ngClass]="{'active': activeNow==='ShoppingList'}"
+            [ngClass]="{'active': false}"
           >Shopping List</a></li>
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown" appDropdown>
-          <a href="#" class="dropdown-toggle" role="button">Manage Data <span class="caret"></span></a>
+          <a class="dropdown-toggle" role="button">Manage Data <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="#">Save Data</a></li>
-            <li><a href="#">Fetch Data</a></li>
+            <li><a>Save Data</a></li>
+            <li><a>Fetch Data</a></li>
           </ul>
         </li>
       </ul>

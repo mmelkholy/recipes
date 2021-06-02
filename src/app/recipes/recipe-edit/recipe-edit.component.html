@@ -1,0 +1,125 @@
+<!-- RECIPE IMAGE START -->
+<div class="row">
+  <div class="col-xs-12">
+    <!-- <h2>{{pageName}}</h2> -->
+    <!-- <img
+      [src]="currentRecipe.imgPath" [alt]="currentRecipe.name" class="img-responsive"> -->
+    <div
+      [ngClass]="recipe.imgPath? 'img-holder' : 'img-placeholder'"
+      [ngStyle]="recipe.imgPath? {'background-image': 'url('+recipe.imgPath+')'} : ''"
+    >
+    <input
+      type="file"
+      (change)="addImgLink($event.target.files[0])"
+      accept="image/*"
+      class="edit glyphicon glyphicon-edit"
+    >
+  </div>
+    <ng-template #noImage>
+      <div class="img-placeholder"></div>
+    </ng-template>
+  </div>
+</div>
+<!-- RECIPE IMAGE END -->
+
+<!-- RECIPE NAME START -->
+<div class="row">
+  <div class="col-xs-12">
+      <h1>
+        <input
+          type="text"
+          name="recipe-name"
+          [(ngModel)]="recipe.name"
+          autofocus
+          onfocus="this.select()">
+      </h1>
+  </div>
+</div>
+<!-- RECIPE NAME END -->
+
+<!-- RECIPE DESCRIPTION -->
+<div class="row">
+  <div class="col-xs-12"><p>
+    <textarea
+      style="width: 100%"
+      onfocus="this.select()"
+      [(ngModel)]="recipe.desription"
+    ></textarea>
+  </p></div>
+</div>
+<!-- RECIPE DESCRIPTION END -->
+
+<!-- INGREDIENTS LIST START -->
+<div class="row">
+  <div class="col-xs-12">
+    <ul class="list-group">
+      <li
+      *ngFor="let ingredient of recipe.ingredients"
+      [name]="ingredient.name"
+      class="list-group-item">
+      <div class="input-group">
+           <!-- ingredient name input -->
+           <input
+           type="text"
+           class="form-control"
+           onfocus="this.select()"
+           autofocus
+           [(ngModel)]="ingredient.name"
+           >
+
+           <!-- text input separator -->
+           <span class="input-group-btn" style="width:0px;"></span>
+
+           <!-- ingredient amount input -->
+          <input type="number" class="form-control" [(ngModel)]="ingredient.amount">
+
+          <!-- remove this ingredient -->
+          <span
+          style="cursor: pointer;"
+          (click)="removeThisIngredient($event.target.parentNode.parentNode.name)"
+          class="input-group-addon">x</span>
+
+         </div>
+      </li>
+      <div class="btn-group pull-right clearfix" style="margin-bottom: 1em;">
+        <!-- add new ingredient -->
+        <button
+          (click)="addNewIngredient()"
+          class="btn btn-default pull-right clearfix"
+        >+</button>
+      </div>
+    </ul>
+  </div>
+</div>
+<!-- INGREDIENTS LIST END -->
+
+<!-- CONTROLS START -->
+<div class="row">
+  <div class="col-xs-12">
+    <div class="btn-group pull-right">
+
+      <!-- SUBMIT BUTTON -->
+      <button
+        class="btn
+        btn-primary"
+        type="submit"
+        (click)="saveChanges()"
+      >Submit</button>
+
+      <!-- RESET BUTTON -->
+      <button
+        class="btn btn-default"
+        type="reset"
+        (click)="resetForm()"
+      >Reset</button>
+
+      <button
+        type="cancel"
+        class="btn btn-secondary"
+        (click)="navigateToBaba()"
+      >Cancel</button>
+
+    </div>
+  </div>
+</div>
+<!-- CONTROLS END -->

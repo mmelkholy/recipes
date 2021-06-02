@@ -18,7 +18,8 @@ export class ShoppingEditComponent implements OnInit {
 
   onAddIngredient(clickEvent) {
     clickEvent.preventDefault()
-    this.ingredients.addNewIngredient(new Ingredient(this.currentName.trim(), this.currentAmount))
+    /**Should be fixed to add ingredient id */
+    // this.ingredients.addNewIngredient(new Ingredient(this.currentName.trim(), this.currentAmount))
   }
 
   onDeleteIngredient(event: Event): void {
