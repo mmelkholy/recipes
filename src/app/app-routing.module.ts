@@ -13,9 +13,9 @@ const routes: Routes = [
   {
     path: 'recipes', component: RecipesComponent, children: [
       { path: '', component: RecipeContainerComponent },
-      { path: 'new', component: RecipeEditComponent, canDeactivate: [CanDeactivateGuardService] },
+      { path: 'new', component: RecipeEditComponent, canDeactivate: [] },
       { path: ':id', component: RecipeDetailComponent },
-      { path: ':id/edit', component: RecipeEditComponent, canDeactivate: [CanDeactivateGuardService] },
+      { path: ':id/edit', component: RecipeEditComponent, canDeactivate: [] },
       {path: '**', redirectTo: '', pathMatch: 'full'}
   ] },
   {

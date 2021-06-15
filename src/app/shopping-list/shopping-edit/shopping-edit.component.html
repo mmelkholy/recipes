@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-xs-12">
-    <form>
+    <form #f="ngForm" (ngSubmit)="onAddIngredient(f)">
       <div class="row">
         <div class="col-sm-5 form-group">
           <label for="name">Name</label>
@@ -8,8 +8,8 @@
             type="text"
             id="name"
             class="form-control"
-            [(ngModel)]="currentName"
-            name="nameInput">
+            name="ingredientName"
+            ngModel>
         </div>
         <div class="col-sm-2 form-group">
           <label for="amount">Amount</label>
@@ -17,8 +17,8 @@
             type="number"
             id="amount"
             class="form-control"
-            [(ngModel)]="currentAmount"
-            name="amountInput">
+            name="amount"
+            ngModel>
         </div>
       </div>
       <div class="row">
@@ -26,21 +26,18 @@
           <button
             class="btn btn-success"
             type="submit"
-            (click)="onAddIngredient($event)"
-            [disabled]="!(currentName.trim().length&&currentAmount.toString().trim().length)"
             >
             Add
           </button>
           <button
             class="btn btn-danger"
             type="button"
-            (click)="onDeleteIngredient($event)"
           >
             Delete
           </button>
           <button
             class="btn btn-primary"
-            type="cancel">
+            type="reset">
             Clear
           </button>
         </div>

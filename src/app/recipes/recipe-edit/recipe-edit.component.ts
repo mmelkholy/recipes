@@ -1,10 +1,11 @@
-import { Ingredient } from 'src/app/shared/ingredients.model';
 import { Recipe } from './../recipe.model';
+import { Ingredient } from 'src/app/shared/ingredients.model';
+import { ActivatedRoute, Router, Params } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
+
 import { RecipeService } from 'src/app/recipe.service';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subscriber, Subscription } from 'rxjs';
-import { CanDeactivateGuard } from 'src/app/can-deactivate-guard.service';
+
 
 
 @Component({
@@ -12,143 +13,124 @@ import { CanDeactivateGuard } from 'src/app/can-deactivate-guard.service';
   templateUrl: './recipe-edit.component.html',
   styleUrls: ['./recipe-edit.component.css']
 })
-export class RecipeEditComponent implements OnInit, OnDestroy, CanDeactivateGuard {
-  subscriptions: object = {}
-  recipe: Recipe
-  editMode = false
-  pageName: string
+export class RecipeEditComponent implements OnInit {
+  // global subscriptions object to be cleared
+  subscriptions = {}
+  recipeForm: FormGroup
+  ingredients: FormArray
+  editMode: boolean = false
+  loadedRecipe: Recipe
 
   constructor(
+    private recipeService: RecipeService,
     private route: ActivatedRoute,
-    private router: Router,
-    private recipes: RecipeService
+    private router: Router
   ) { }
 
   ngOnInit(): void {
-    this.subscriptions['id'] = this.route.params.subscribe(
-      (params: Params) => {
-        // If editing get the target recipe
-        const fetchedRecipe = this.recipes.getRecipeById(+params['id'])
-        if (fetchedRecipe) { // If there's a recipe, make the edit
+    // DETECT THE ROUTE & SET THE EDITMODE FLAG
+    this.subscriptions['route'] = this.route.params.subscribe((params: Params) => {
+      if (params['id']) { // We have an id - try getting a recipe
+        let currentRecipe = this.recipeService.getRecipeById(+params['id'])
+
+        if (currentRecipe) {
+          //The ID matched an existing recipe - load it
+
+          // SET THE EDIT MODE FLAG TO TRUE & PREPARE THE loadedRecipe PROPERTY FOR THE RESET FUNCTIONALITY
           this.editMode = true
-          console.log(this.route)
-          this.recipe = fetchedRecipe
-        } else if (params['id']) { // If there's no recipe but the user wanted to edit, make a new one
-          this.router.navigate(['../../new'], { relativeTo: this.route })
-        } else { // I'm sure there's no recipe here
-          this.recipe = new Recipe(
-            this.recipes.listRecipes().length + 1,
-            'Recipe Name',
-            'Please add your recipe description here',
-            null,
-            [new Ingredient(
-              this.recipes.listRecipes().length + '-0',
-              'Ingredient Name',
-              0
-            )]
-          )
+          this.loadedRecipe = currentRecipe
+          console.log(this.loadedRecipe)
+
+          // FILL IN THE RECIPE DATA
+          this.fillLoadedRecipe(currentRecipe)
+
+        } else {
+          // arbitrary id, navigate to add new recipe
+          this.router.navigate(['../../', 'new'], {relativeTo: this.route})
         }
-
-        // Based on the the assigned editMode value while initializing, the page title will be decided
-        this.pageName = this.editMode ? "Edit Recipe" : "New Recipe"
-
-        // This makes a new instance of the recipe item in hands so that any changed due to the two way binding will not reflect on any other component before saving. In case of a new recipe being added, this will initialize a new recipe.
-        if (this.editMode) {
-          console.log(this.editMode)
-          const NewRecipe = new Recipe(
-            this.recipe.id,
-            this.recipe.name,
-            this.recipe.desription,
-            this.recipe.imgPath,
-            this.recipe.ingredients
-          );
-          this.recipe = NewRecipe
-        } else { }
+      } else {
+        // MEANS WE'RE IN THE NEW RECIPE PAGE
+        this.initializeNewRecipe()
       }
-    )
+    })
   }
 
-  ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
-    for (let subscription in this.subscriptions) {
-      console.log()
-      let sub: Subscriber<any> = this.subscriptions[subscription]
-      sub.unsubscribe()
-    }
+  submitRecipe() {
+    console.log(this.recipeForm.value)
   }
 
-  // Add ingredient action
   addNewIngredient() {
-    this.recipe.ingredients.push(new Ingredient(
-      this.recipe.id + '-' + this.recipe.ingredients.length,
-      'Ingredient Name',
-      0
-    ))
-  }
-
-  // Remove Ingredient action
-  removeThisIngredient(ingredientName) {
-    const index: number = this.recipe.ingredients.findIndex(
-      (ingredient: Ingredient, index) => {
-        ingredient.name !== ingredientName
-        return index
+    this.ingredients.push(
+      new FormGroup({
+        'ingredientName': new FormControl('New Ingredient'),
+        'ingredientAmount': new FormControl(1)
       })
-    console.log(index)
-    console.log(this.recipe.ingredients)
-    this.recipe.ingredients = this.recipe.ingredients.filter((item: Ingredient, n) => n !== index)
+    )
+    console.log(this.ingredients)
   }
 
-  // Submit button action - EDIT ONLY
-  saveChanges() {
-    console.log(this.recipe.id)
-    if (this.editMode) {
-      this.recipes.updateRecipe(this.recipe)
-      console.log(this.recipes.listRecipes())
-    } else {
-      this.recipes.addNewRecipe(this.recipe)
-      console.log(this.recipes.listRecipes())
-    }
-    this.navigateToBaba()
+  removeThisIngredient(index: number) {
+    this.ingredients.removeAt(index)
   }
 
-  // Reset button action
   resetForm() {
-    this.recipe = this.recipes.getRecipeById(this.recipe.id)
+    if (this.editMode) {
+      this.fillLoadedRecipe(this.loadedRecipe)
+    } else {
+      this.initializeNewRecipe()
+    }
   }
 
-  // function to exit edit screen and return to the recipe page
-  navigateToBaba() {
-    this.router.navigate(['../'], { relativeTo: this.route })
-  }
+  /** A FUNCTION TO FILL THE FROM WITH A RECIPE DETAILS */
+  private fillLoadedRecipe(recipe: Recipe): void {
+    const { id, name, description, imgPath, ingredients } = recipe
 
-  // Add Image
-  addImgLink(file: File) {
-    console.log(file)
-  }
-
-  // Delete Image
-
-
-
-  // canDeactivate Route Guard
-  CanDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
-    let equal: boolean = true
-    if (this.recipes.getRecipeById(this.recipe.id)) { // means we're editing
-      const thisRecipe: Recipe = this.recipe,
-        originalRecipe: Recipe = this.recipes.getRecipeById(this.recipe.id)
-
-      for (let key in thisRecipe) {
-        if (thisRecipe[key] !== originalRecipe[key]) {
-          equal = false
-          break
-        }
-      }
-    } else { // adding a new item
-      equal = false
+    // PREPARE THE INGREDIENTS ARRAY
+    const ingredientsArray: FormArray = new FormArray([])
+    for (let ingredient of ingredients) {
+      ingredientsArray.push(
+        new FormGroup({
+          'ingredientName': new FormControl(ingredient.name),
+          'ingredientAmount': new FormControl(ingredient.amount)
+        })
+      )
     }
 
-    return !equal ? confirm('Discard Changes?') : true;
+    // SET THE GLOBL INGREDIENTS VALUE
+    this.ingredients = ingredientsArray
+
+    // FILL THE RECIPE FROM FROM THE RETREIVED RECIPE
+    this.recipeForm = new FormGroup({
+      'id': new FormControl(id, [Validators.required]),
+      'recipeDetails': new FormGroup({
+        'recipeName': new FormControl(name, [Validators.required]),
+        'recipeDescription': new FormControl(description, Validators.required),
+        'imgPath': new FormControl(imgPath)
+      }),
+      'ingredients': this.ingredients
+    })
+  }
+
+  /** A FUNCTION TO INITIALIZE THE FORM FOR A NEW RECIPE */
+  private initializeNewRecipe(): void {
+    // PREPARE THE GLOBALE INGREDIENTS ARRAY
+    this.ingredients = new FormArray([
+      new FormGroup({
+        'ingredientName': new FormControl('New Ingredient Name', Validators.required),
+        'ingredientAmount': new FormControl(0, Validators.required)
+      })
+    ])
+
+    // INITIALIZE A BLANK RECIPE FORM
+    this.recipeForm = new FormGroup({
+      'id': new FormControl(this.recipeService.listRecipes().length + 1, [Validators.required]),
+      'recipeDetails': new FormGroup({
+        'recipeName': new FormControl('New Recipe', [Validators.required]),
+        'recipeDescription': new FormControl('Recipe Description', Validators.required),
+        'imgPath': new FormControl(null)
+      }),
+      'ingredients': this.ingredients
+    })
   }
 
 }
