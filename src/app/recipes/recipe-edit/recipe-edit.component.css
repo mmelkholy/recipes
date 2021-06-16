@@ -31,3 +31,7 @@
   color: grey;
   display: block;
 }
+
+input[formControlName="imgPath"] {
+  background-color: transparent !important;
+}
