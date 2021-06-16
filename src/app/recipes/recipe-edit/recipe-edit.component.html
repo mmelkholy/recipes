@@ -7,17 +7,16 @@
         [src]="currentRecipe.imgPath" [alt]="currentRecipe.name" class="img-responsive"> -->
 
       <div
-        [ngClass]="recipeForm.get('recipeDetails.imgPath').value? 'img-holder' : 'img-placeholder'"
+        class="img-holder"
+        [ngClass]="recipeForm.get('recipeDetails.imgPath').value? '' : 'img-placeholder'"
         [ngStyle]="recipeForm.get('recipeDetails.imgPath').value? {'background-image':
         'url('+recipeForm.get('recipeDetails.imgPath').value+')'} : ''">
-      <!-- <input
-        type="file"
-        name="img"
+      <input
+        type="text"
+        name="imgPath"
+        class="form-control"
         formControlName="imgPath"
-        accept="image/*"
-        class="edit glyphicon glyphicon-edit"
-        [value]=""
-      > -->
+      >
     </div>
       <ng-template #noImage>
         <div class="img-placeholder"></div>

@@ -13,11 +13,6 @@
 
 .img-placeholder {
   position: relative;
-  width: 25%;
-  height: auto;
-  min-height: 10em;
-  max-height: 400px;
-  min-width: 3em;
   border: 1px solid grey;
   border-radius: 0.5rem;
   background-image: url(http://127.0.0.1/public/images/img-placeholder.jpeg);
