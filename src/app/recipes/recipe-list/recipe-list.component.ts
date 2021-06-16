@@ -10,20 +10,21 @@ import { RecipeService } from 'src/app/recipe.service';
 })
 export class RecipeListComponent implements OnInit, OnDestroy {
   recipeList: Recipe[]
-  recipeListEvent: Subscription
+  recipeListSubscription: Subscription
 
   constructor(private recipes: RecipeService) { }
 
   ngOnInit(): void {
     this.recipeList = this.recipes.listRecipes()
-    this.recipeListEvent = this.recipes.recipeListUpdated.subscribe((recipesList: Recipe[]) => {
-      this.recipeList = recipesList
+    this.recipeListSubscription = this.recipes.recipeListUpdated.subscribe((recipeList: Recipe[]) => {
+      this.recipeList = recipeList
+      console.log('updated')
     })
   }
 
   ngOnDestroy(): void {
     //Called once, before the instance is destroyed.
     //Add 'implements OnDestroy' to the class.
-    this.recipeListEvent.unsubscribe()
+    this.recipeListSubscription.unsubscribe()
   }
 }

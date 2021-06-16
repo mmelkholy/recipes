@@ -1,10 +1,11 @@
 import { Recipe } from './../recipe.model';
-import { Ingredient } from 'src/app/shared/ingredients.model';
 import { ActivatedRoute, Router, Params } from '@angular/router';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
 
 import { RecipeService } from 'src/app/recipe.service';
+import { Subject, Subscription } from 'rxjs';
+import { Ingredient } from 'src/app/shared/ingredients.model';
 
 
 
@@ -13,7 +14,7 @@ import { RecipeService } from 'src/app/recipe.service';
   templateUrl: './recipe-edit.component.html',
   styleUrls: ['./recipe-edit.component.css']
 })
-export class RecipeEditComponent implements OnInit {
+export class RecipeEditComponent implements OnInit, OnDestroy {
   // global subscriptions object to be cleared
   subscriptions = {}
   recipeForm: FormGroup
@@ -39,34 +40,75 @@ export class RecipeEditComponent implements OnInit {
           // SET THE EDIT MODE FLAG TO TRUE & PREPARE THE loadedRecipe PROPERTY FOR THE RESET FUNCTIONALITY
           this.editMode = true
           this.loadedRecipe = currentRecipe
-          console.log(this.loadedRecipe)
 
           // FILL IN THE RECIPE DATA
           this.fillLoadedRecipe(currentRecipe)
 
         } else {
           // arbitrary id, navigate to add new recipe
-          this.router.navigate(['../../', 'new'], {relativeTo: this.route})
+          this.router.navigate(['../../', 'new'], { relativeTo: this.route })
         }
       } else {
         // MEANS WE'RE IN THE NEW RECIPE PAGE
-        this.initializeNewRecipe()
+        this.fillLoadedRecipe(this.initializeNewRecipe())
       }
     })
   }
 
+  ngOnDestroy(): void {
+    for (let subscription in this.subscriptions) {
+      this.subscriptions[subscription].unsubscribe()
+    }
+  }
+
+  get formIngredients() {
+    return this.recipeForm.get('ingredients').value
+  }
+
   submitRecipe() {
-    console.log(this.recipeForm.value)
+    const newIngredients: Ingredient[] = []
+    for (let ingredient of this.formIngredients) {
+      newIngredients.push(
+        new Ingredient(
+          ingredient.ingredientId,
+          ingredient.ingredientName,
+          ingredient.ingredientAmount
+        )
+      )
+    }
+
+    const { id, recipeDetails } = this.recipeForm.value
+    const newRecipe = new Recipe(
+      id,
+      recipeDetails.recipeName,
+      recipeDetails.recipeDescription,
+      recipeDetails.imgPath,
+      newIngredients
+    )
+
+    if (this.editMode) { // edit current recipe
+      this.recipeService.updateRecipe(newRecipe)
+    } else { // submit a new recipe
+      this.recipeService.addNewRecipe(newRecipe)
+    }
+
+    this.router.navigate(['..'], {relativeTo: this.route})
   }
 
   addNewIngredient() {
+    let id: string
+    if (this.editMode) {
+      id = this.loadedRecipe.id + '-' + ((this.recipeForm.get('ingredients') as FormArray).length + 1)
+    } else {
+      id = (this.recipeService.listRecipes().length + 1) + '-' + ((this.recipeForm.get('ingredients') as FormArray).length + 1)
+    }
     this.ingredients.push(
       new FormGroup({
+        'ingredientId': new FormControl(id),
         'ingredientName': new FormControl('New Ingredient'),
         'ingredientAmount': new FormControl(1)
       })
     )
-    console.log(this.ingredients)
   }
 
   removeThisIngredient(index: number) {
@@ -90,6 +132,7 @@ export class RecipeEditComponent implements OnInit {
     for (let ingredient of ingredients) {
       ingredientsArray.push(
         new FormGroup({
+          'ingredientId': new FormControl(ingredient.id),
           'ingredientName': new FormControl(ingredient.name),
           'ingredientAmount': new FormControl(ingredient.amount)
         })
@@ -111,26 +154,15 @@ export class RecipeEditComponent implements OnInit {
     })
   }
 
-  /** A FUNCTION TO INITIALIZE THE FORM FOR A NEW RECIPE */
-  private initializeNewRecipe(): void {
-    // PREPARE THE GLOBALE INGREDIENTS ARRAY
-    this.ingredients = new FormArray([
-      new FormGroup({
-        'ingredientName': new FormControl('New Ingredient Name', Validators.required),
-        'ingredientAmount': new FormControl(0, Validators.required)
-      })
-    ])
-
-    // INITIALIZE A BLANK RECIPE FORM
-    this.recipeForm = new FormGroup({
-      'id': new FormControl(this.recipeService.listRecipes().length + 1, [Validators.required]),
-      'recipeDetails': new FormGroup({
-        'recipeName': new FormControl('New Recipe', [Validators.required]),
-        'recipeDescription': new FormControl('Recipe Description', Validators.required),
-        'imgPath': new FormControl(null)
-      }),
-      'ingredients': this.ingredients
-    })
+  /** A FUNCTION TAHT RETURNS A BLANK NEW RECIPE */
+  private initializeNewRecipe(): Recipe {
+    return new Recipe(
+      this.recipeService.listRecipes().length + 1,
+      'New Recipe',
+      'Please add recipe description here',
+      null,
+      []
+    )
   }
 
 }

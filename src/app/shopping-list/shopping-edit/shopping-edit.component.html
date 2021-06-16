@@ -33,6 +33,7 @@
           <button
             class="btn btn-danger"
             type="button"
+            *ngIf="editingIndex !== null"
             (click)="onDeleteIngredient()"
           >
             Delete

@@ -57,8 +57,9 @@ export class RecipeService {
 
   updateRecipe(recipe: Recipe) {
     const index: number = this.recipes.findIndex((item: Recipe) => item.id === recipe.id)
-    console.log(index, this.recipes[index]['id'], recipe.id)
     this.recipes[index] = recipe
+    this.recipesListUpdates()
+    console.log(this.recipes)
   }
 
   addNewRecipe(recipe: Recipe) {
