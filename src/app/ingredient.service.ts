@@ -22,7 +22,7 @@ export class IngredientService {
   addNewIngredient(ingredient: Ingredient): void {
     let index = this.ingredients.findIndex(ing => ing.id === ingredient.id)
     console.log(index)
-    if (index >= 0) {
+    if (index >= 0 && this.ingredients[index].name === ingredient.name) {
       this.ingredients[index].amount += ingredient.amount
     } else {
       this.ingredients.push(ingredient)

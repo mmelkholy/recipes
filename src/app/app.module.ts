@@ -16,6 +16,7 @@ import { DropdownDirective } from './shared/drop-down.directive';
 import { RecipeContainerComponent } from './recipes/recipe-container/recipe-container.component';
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
 import { RecipeCreateComponent } from './recipes/recipe-create/recipe-create.component';
+import { RecipeToFormPipe } from './recipe-to-form.pipe';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { RecipeCreateComponent } from './recipes/recipe-create/recipe-create.com
     DropdownDirective,
     RecipeContainerComponent,
     RecipeEditComponent,
-    RecipeCreateComponent
+    RecipeCreateComponent,
+    RecipeToFormPipe
   ],
   imports: [
     BrowserModule,
