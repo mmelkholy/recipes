@@ -1,7 +1,7 @@
 import { Recipe } from './../recipe.model';
 import { ActivatedRoute, Router, Params } from '@angular/router';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormArray } from '@angular/forms';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 
 import { RecipeService } from 'src/app/recipe.service';
 import { Ingredient } from 'src/app/shared/ingredients.model';
@@ -25,6 +25,9 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
   ingredients: FormArray
   editMode: boolean = false
   loadedRecipe: Recipe
+  addedIngredient: boolean = false
+
+  @ViewChild('[appLastIngredient]', {read: 'ElementRef'}) private lastIngredient: ElementRef
 
   blankRecipe: Recipe = new Recipe(
     this.recipeService.listRecipes().length + 1,
@@ -58,18 +61,20 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
           // SET THE EDIT MODE FLAG TO TRUE & PREPARE THE loadedRecipe PROPERTY FOR THE RESET FUNCTIONALITY
           this.editMode = true
           this.loadedRecipe = currentRecipe
-
-          // FILL IN THE RECIPE DATA
-          this.recipeForm = this.recipeToFromPipe.transform(currentRecipe)
-
         } else {
           // arbitrary id, navigate to add new recipe
           this.router.navigate(['../../', 'new'], { relativeTo: this.route })
         }
       } else {
         // MEANS WE'RE IN THE NEW RECIPE PAGE
-        this.recipeForm = this.recipeToFromPipe.transform(this.blankRecipe)
+        this.loadedRecipe = this.blankRecipe
       }
+      // FILL IN THE RECIPE DATA
+      this.recipeForm = this.recipeToFromPipe.transform(this.loadedRecipe)
+
+      //focus the added ingredient input
+      console.log((<FormArray>this.recipeForm.get('ingredients')).length > this.loadedRecipe.ingredients.length)
+      this.addedIngredient = (<FormArray>this.recipeForm.get('ingredients')).length > this.loadedRecipe.ingredients.length ? true : false
     })
   }
 
@@ -79,26 +84,7 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  get formIngredients() {
-    return this.recipeForm.get('ingredients').value
-  }
-
-
-
   submitRecipe() {
-    /* const newIngredients: Ingredient[] = []
-    for (let ingredient of this.formIngredients) {
-      newIngredients.push(
-        new Ingredient(
-          ingredient.ingredientId,
-          ingredient.ingredientName,
-          ingredient.ingredientAmount
-        )
-      )
-    }
-
-    const { id, recipeDetails } = this.recipeForm.value */
-
     const newRecipe = this.fromToRecipePipe.transform(this.recipeForm)
 
     if (this.editMode) { // edit current recipe
@@ -120,14 +106,20 @@ export class RecipeEditComponent implements OnInit, OnDestroy {
     (this.recipeForm.get('ingredients') as FormArray).push(
       new FormGroup({
         'ingredientId': new FormControl(id),
-        'ingredientName': new FormControl('New Ingredient'),
-        'ingredientAmount': new FormControl(0)
+        'ingredientName': new FormControl('New Ingredient', [Validators.required]),
+        'ingredientAmount': new FormControl(0, [Validators.required, Validators.min(0)])
       })
-    )
+    );
+    this.addedIngredient = (<FormArray>this.recipeForm.get('ingredients')).length > this.loadedRecipe.ingredients.length ? true : false
+    console.log((<FormArray>this.recipeForm.get('ingredients')).length > this.loadedRecipe.ingredients.length)
   }
 
   removeThisIngredient(index: number) {
     this.ingredients.removeAt(index)
+  }
+
+  trackByIndex(index: number, item: any): number {
+    return index
   }
 
   resetForm() {

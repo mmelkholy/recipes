@@ -1,5 +1,5 @@
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Subscriber } from 'rxjs';
 
 import { IngredientService } from './../../ingredient.service';
@@ -26,6 +26,8 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
     private router: Router
   ) {
   }
+
+  @HostListener('click') onClick() {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params: Params) => {

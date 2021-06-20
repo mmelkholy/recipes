@@ -34,7 +34,8 @@
             type="text"
             name="recipeName"
             formControlName="recipeName"
-            onfocus="this.select()">
+            onfocus="this.select()"
+            autofocus="true">
         </h1>
         <p>
           <textarea
@@ -55,15 +56,19 @@
       <ul class="list-group" formArrayName="ingredients">
 
         <li
-          *ngFor="let ingredient of recipeForm.get('ingredients')?.value; let i = index"
-          class="list-group-item" [formGroupName]="i">
-
+          *ngFor="let ingredient of recipeForm.get('ingredients')?.value; index as i; trackBy: trackByIndex; last as lastChild"
+          class="list-group-item" [formGroupName]="i"
+          >
+          
           <div class="input-group">
             <!-- ingredient name input -->
             <input
             type="text"
             name="ingredientName"
             formControlName="ingredientName"
+            onblur="return false"
+            [appLastIngredient]="lastChild && addedIngredient"
+            [ngClass]="{'last-child': lastChild}"
             class="form-control"
             onfocus="this.select()">
 

@@ -2,6 +2,7 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,6 +18,7 @@ import { RecipeContainerComponent } from './recipes/recipe-container/recipe-cont
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
 import { RecipeCreateComponent } from './recipes/recipe-create/recipe-create.component';
 import { RecipeToFormPipe } from './recipe-to-form.pipe';
+import { LastIngredientDirective } from './last-ingredient.directive';
 
 @NgModule({
   declarations: [
@@ -32,14 +34,16 @@ import { RecipeToFormPipe } from './recipe-to-form.pipe';
     RecipeContainerComponent,
     RecipeEditComponent,
     RecipeCreateComponent,
-    RecipeToFormPipe
+    RecipeToFormPipe,
+    LastIngredientDirective
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    HttpClientModule
   ],
   providers: [
     AppRoutingModule

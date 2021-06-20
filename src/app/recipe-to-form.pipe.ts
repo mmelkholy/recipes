@@ -26,7 +26,7 @@ export class RecipeToFormPipe implements PipeTransform {
       }))
     }
 
-    const recipeForm = new FormGroup({
+    return new FormGroup({
       'id': new FormControl(recipe.id, [Validators.required]),
       'recipeDetails': new FormGroup({
         'recipeName': new FormControl(recipe.name, [Validators.required, Validators.minLength(3)]),
@@ -35,8 +35,6 @@ export class RecipeToFormPipe implements PipeTransform {
       }),
       'ingredients': ingredientsArray
     })
-
-    return recipeForm;
   }
 }
 
