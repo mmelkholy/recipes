@@ -8,10 +8,13 @@ import { Recipe } from '../../recipe.model';
   styleUrls: ['./recipe-item.component.css']
 })
 export class RecipeItemComponent implements OnInit {
-  @Input() item: Recipe
+  @Input() item: Recipe = null
+
+  imgUrl
 
   constructor(private recipes: RecipeService) { }
 
   ngOnInit(): void {
+    this.imgUrl = this.item.imgPath ? `url(${this.item.imgPath})` : `url('http://127.0.0.1/public/images/img-placeholder.jpeg')`
   }
 }

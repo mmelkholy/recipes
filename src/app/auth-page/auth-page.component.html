@@ -1,0 +1,33 @@
+<div class="row">
+  <div class="col-xs-12 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+    <form class="form-group-lg" (ngSubmit)="submitForm(f)" #f="ngForm">
+      <h3 style="text-align: center;">
+        {{isRegistered? 'Login to your account!': 'Sign Up!'}}
+      </h3>
+
+      <input type="text" name="name" id="name" placeholder="Your Name" class="form-control" *ngIf="!isRegistered" required minlength="3" ngModel>
+
+      <select name="gender" id="gender" placeholder="Gender" class="form-control" *ngIf="!isRegistered" required ngModel>
+        <option disabled selected ngValue="undefined">Gender</option>
+        <option ngValue="male">Male</option>
+        <option ngValue="female">Female</option>
+      </select>
+
+      <input type="text" name="email" id="email" class="form-control" placeholder="Email" required email ngModel>
+
+      <input type="password" name="password" id="password" class="form-control" placeholder="Password" required minlength="8" ngModel>
+
+      <button class="btn btn-primary pull-right clearfix" type="submit" [disabled]="f.invalid">
+        Login
+      </button>
+
+      <p>
+        {{isRegistered? 'Don\'t' : 'Already'}} Have An Accout?
+        <a (click)="switchMode()">
+          {{isRegistered? 'Sign Up!' : 'Login!'}}
+        </a>
+      </p>
+    </form>
+    {{f.value | json}}
+  </div>
+</div>

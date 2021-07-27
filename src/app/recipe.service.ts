@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Recipe } from './recipes/recipe.model';
-import { Ingredient } from './shared/ingredients.model';
+import { HttpService } from './services/http.service';
+import { tap } from 'rxjs/operators'
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecipeService {
-  private recipes: Recipe[] = [
+  private recipes: Recipe[] = []
+  /* [
     new Recipe(
       1,
       "Pasta Recipe",
@@ -32,14 +34,18 @@ export class RecipeService {
         new Ingredient('2-3', 'Cheese', 0.1)
       ]
     )
-  ]
+  ] */
 
   recipeListUpdated = new Subject<Recipe[]>()
 
+  constructor(private httpSerrvice: HttpService) { }
 
-  constructor() { }
+  setRecipes(recipes: Recipe[]): void {
+    this.recipes = recipes
+    this.recipesListUpdated()
+  }
 
-  recipesListUpdates() {
+  recipesListUpdated(): void {
     this.recipeListUpdated.next(this.recipes)
   }
 
@@ -55,23 +61,42 @@ export class RecipeService {
     return this.recipes.filter(recipe => recipe.id === id)[0]
   }
 
-  updateRecipe(recipe: Recipe) {
+  updateRecipe(recipe: Recipe): void {
     const index: number = this.recipes.findIndex((item: Recipe) => item.id === recipe.id)
     this.recipes[index] = recipe
-    this.recipesListUpdates()
+    this.recipesListUpdated()
     console.log(this.recipes)
   }
 
-  addNewRecipe(recipe: Recipe) {
-    this.recipes.push(recipe)
-    this.recipesListUpdates()
+  addNewRecipe(recipe: Recipe): void {
+    let newArray: Recipe[] = [...this.recipes]
+    newArray.push(recipe)
+    this.updateRecipes(newArray)
   }
 
-  deleteRecipeById(id: number) {
+  deleteRecipeById(id: number): void {
     this.recipes = this.recipes.filter((recipe: Recipe) => {
       return recipe.id !== id
     })
-    console.log(this.recipes)
-    this.recipesListUpdates()
+    this.updateRecipes(this.recipes)
+  }
+
+  fetchRecipeList() {
+    this.httpSerrvice.getRecipes().pipe(tap(
+      (recipes: Recipe[]) => this.recipes = recipes
+    )).subscribe((recipes: Recipe[]) => {
+      this.setRecipes(recipes)
+    })
+  }
+
+  private updateRecipes(recipes: Recipe[]) {
+    this.httpSerrvice.saveRecipes(recipes)
+      .pipe(
+        tap((res: Recipe[]) => {
+          console.log(res)
+          this.recipes = res
+          this.recipesListUpdated()
+        })
+      )
   }
 }

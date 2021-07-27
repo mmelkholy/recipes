@@ -1,0 +1,36 @@
+form {
+  border: 1px solid darkgrey;
+  border-radius: 1em;
+  padding: 1em 2em 2em;
+  margin-top: 2em;
+  box-shadow: 0 0 4px hsla(0, 0%, 0%, 0.251);
+}
+
+form h3 {
+  text-transform: capitalize;
+  margin: 0.5em auto 1em;
+}
+
+form>input {
+  margin: 0.5em auto;
+}
+
+form>input:last-of-type {
+  margin-bottom: 1em;
+}
+
+form p {
+  padding-top: 0.5em;
+}
+
+input.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched {
+  border-left-color: red;
+  border-left-width: 0.35em;
+}
+
+input.ng-dirty.ng-valid,
+select.ng-dirty.ng-valid {
+  border-left-color: green;
+  border-left-width: 0.35em;
+}

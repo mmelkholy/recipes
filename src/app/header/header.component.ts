@@ -1,18 +1,13 @@
-import { AfterViewInit, Component, EventEmitter, OnInit } from '@angular/core';
-import { ActivatedRouteSnapshot } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit, AfterViewInit {
+export class HeaderComponent {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
-
-  ngAfterViewInit(): void {
-  }
 }

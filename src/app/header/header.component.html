@@ -14,14 +14,13 @@
             routerLink="/recipes"
             routerLinkActive="active"
             name="Recipes"
-            [ngClass]="{'active': false}"
-            #firstMenuElement
+            class="navbar-link"
           >Recipes</a></li>
         <li><a
             routerLink="/shopping-list"
             routerLinkActive="active"
             name="ShoppingList"
-            [ngClass]="{'active': false}"
+            class="navbar-link"
           >Shopping List</a></li>
       </ul>
 
@@ -31,6 +30,17 @@
           <ul class="dropdown-menu">
             <li><a>Save Data</a></li>
             <li><a>Fetch Data</a></li>
+          </ul>
+        </li>
+        <li class="dropdown" appDropdown>
+          <a class="dropdown-toggle" role="button">My Account<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li>
+              <a routerLink="/auth">Login/SignUp</a>
+            </li>
+            <li>
+              <a>My Profile</a>
+            </li>
           </ul>
         </li>
       </ul>

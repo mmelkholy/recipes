@@ -1,5 +1,5 @@
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscriber } from 'rxjs';
 
 import { IngredientService } from './../../ingredient.service';
@@ -20,20 +20,20 @@ export class RecipeDetailComponent implements OnInit, OnDestroy {
   }
 
   constructor(
-    private recipes: RecipeService,
-    private ingredients: IngredientService,
+    private router: Router,
     private route: ActivatedRoute,
-    private router: Router
+    private recipes: RecipeService,
+    private ingredients: IngredientService
   ) {
   }
-
-  @HostListener('click') onClick() {}
 
   ngOnInit(): void {
     this.route.params.subscribe((params: Params) => {
       this.currentRecipe = this.recipes.getRecipeById(+params['id'])
       if (this.currentRecipe) {
-        this.imgStyle['background-image'] = 'url(' + this.currentRecipe.imgPath + ')'
+        this.imgStyle['background-image'] = 'url(' + (this.currentRecipe.imgPath ? this.currentRecipe.imgPath : 'http://127.0.0.1/public/images/img-placeholder.jpeg') + ')'
+      } else {
+        this.router.navigate(['/'])
       }
     })
   }

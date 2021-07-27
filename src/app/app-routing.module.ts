@@ -1,7 +1,8 @@
+import { AuthPageComponent } from './auth-page/auth-page.component';
+import { RecipesResolverService } from './recipes-resolver.service';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { CanDeactivateGuardService } from './can-deactivate-guard.service';
 import { RecipeContainerComponent } from './recipes/recipe-container/recipe-container.component';
 import { RecipeDetailComponent } from './recipes/recipe-detail/recipe-detail.component';
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
@@ -10,9 +11,10 @@ import { ShoppingEditComponent } from './shopping-list/shopping-edit/shopping-ed
 import { ShoppingListComponent } from './shopping-list/shopping-list.component';
 
 const routes: Routes = [
+  {path: 'auth', component: AuthPageComponent},
   {
-    path: 'recipes', component: RecipesComponent, children: [
-      { path: '', component: RecipeContainerComponent },
+    path: 'recipes', component: RecipesComponent, resolve: [RecipesResolverService], children: [
+      { path: '', component: RecipeContainerComponent, resolve: [RecipesResolverService] },
       { path: 'new', component: RecipeEditComponent, canDeactivate: [] },
       { path: ':id', component: RecipeDetailComponent },
       { path: ':id/edit', component: RecipeEditComponent, canDeactivate: [] },

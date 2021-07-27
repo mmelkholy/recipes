@@ -9,6 +9,10 @@
     <p class="list-group-item-text">{{ item.description }}</p>
   </div>
   <span class="pull-right">
-    <img [alt]="item.name" [src]="item.imgPath || 'http://127.0.0.1/public/images/img-placeholder.jpeg'" class="img-responsive" style="max-height: 50px; max-width: 70px;">
+    <!-- <img [alt]="item.name" class="img-responsive" style="max-height: 50px; max-width: 70px;" [src]="item.imgPath"> -->
+    <div
+      [ngStyle]="{'background-image': imgUrl}"
+      class="img-responsive img-thumb">
+  </div>
   </span>
 </a>

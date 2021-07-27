@@ -19,6 +19,8 @@ import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component
 import { RecipeCreateComponent } from './recipes/recipe-create/recipe-create.component';
 import { RecipeToFormPipe } from './recipe-to-form.pipe';
 import { LastIngredientDirective } from './last-ingredient.directive';
+import { NgHttpLoaderModule } from 'ng-http-loader';
+import { AuthPageComponent } from './auth-page/auth-page.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,8 @@ import { LastIngredientDirective } from './last-ingredient.directive';
     RecipeEditComponent,
     RecipeCreateComponent,
     RecipeToFormPipe,
-    LastIngredientDirective
+    LastIngredientDirective,
+    AuthPageComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +46,8 @@ import { LastIngredientDirective } from './last-ingredient.directive';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    HttpClientModule
+    HttpClientModule,
+    NgHttpLoaderModule.forRoot()
   ],
   providers: [
     AppRoutingModule
